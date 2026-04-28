@@ -1,5 +1,3 @@
-
-
 import re
 
 from src.pages.base_page import BasePage
@@ -8,8 +6,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from src.components.event_card_components import EventCardComponent
 from selenium.webdriver.common.keys import Keys
-class EventsPage(BasePage):
+import allure
 
+class EventsPage(BasePage):
     main_header_locator = (By.XPATH, "//p[contains(@class, 'main-header')]")
     items_fount_locator = (By.XPATH, "//div[@class='active-filter-container']/p")
     cards_locator = (By.XPATH, "//mat-card")
@@ -32,9 +31,10 @@ class EventsPage(BasePage):
 
     def get_main_header(self):
         return self.driver.find_element(*self.main_header_locator)
+
     def get_items_found(self):
         return self.driver.find_element(*self.items_fount_locator)
-    
+
     def get_items_count(self):
         items_found = self.get_items_found()
         text = items_found.text
@@ -44,9 +44,10 @@ class EventsPage(BasePage):
             result = int(match.group())
             return result
 
-    def get_cards(self)->list[EventCardComponent]:
+    @allure.step("Отримання списку карток подій")
+    def get_cards(self) -> list[EventCardComponent]:
         try:
-            WebDriverWait(self.driver, 10).until(
+            WebDriverWait(self.driver, 2).until(
                 EC.presence_of_all_elements_located(self.cards_locator)
             )
         except:
@@ -60,16 +61,18 @@ class EventsPage(BasePage):
 
         return cards
 
+    @allure.step("Відкриття поля пошуку")
     def open_search(self):
         search_btn = self.wait.until(EC.element_to_be_clickable(self.search_button_locator))
         search_btn.click()
 
+    @allure.step("Введення тексту в пошук: {text}")
     def fill_search_field(self, text):
         search_field = self.driver.find_element(*self.search_input_locator)
         search_field.clear()
         search_field.send_keys(text)
 
-
+    @allure.step("Встановлення фільтра статусу: {status_name}")
     def set_status_filter(self, status_name):
         """
         Метод перевіряє, чи відкрите меню,
@@ -86,20 +89,24 @@ class EventsPage(BasePage):
         option_id = self.status_options.get(status_name)
         self.wait.until(EC.element_to_be_clickable((By.ID, option_id))).click()
 
-
-    def press_Escape(self):
+    @allure.step("Натиснення Escape")
+    def press_escape(self):
         self.driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.ESCAPE)
 
+    @allure.step("Очікування застосування фільтра: {status_name}")
     def wait_until_status_applied(self, status_name):
         status_xpath = f"//div[contains(@class, 'event-status') and contains(text(), '{status_name}')]"
         return self.wait_for_element((By.XPATH, status_xpath))
 
+    @allure.step("Перевірка відображення форми входу")
     def is_login_form_displayed(self):
         return self.wait_for_element(self.sign_in_form_locator)
 
+    @allure.step("Пошук події за назвою: {name}")
     def search_event_by_name(self, name):
         self.open_search()
         self.fill_search_field(name)
 
+    @allure.step("Очікавання загрузки сторінки")
     def wait_for_page_to_load(self):
         return self.wait_for_element(self.main_header_locator)

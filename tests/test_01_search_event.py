@@ -1,12 +1,14 @@
 from src.pages.events_page import EventsPage
+import allure
 
-
+@allure.feature("Events Management")
+@allure.story("Search Functionality")
 def test_tc01_search_by_name(driver):
     page = EventsPage(driver)
     page.navigate_to_events()
     page.wait_for_page_to_load()
 
-    target_name = "TESTEVENT"
+    target_name = "Some Event"
     page.search_event_by_name(target_name)
 
     cards = page.get_cards()

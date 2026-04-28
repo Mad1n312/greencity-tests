@@ -73,6 +73,29 @@ Run a single test case:
 pytest tests/test_01_search_event.py::test_tc01_search_by_name
 ```
 
+
+## Allure Reporting (Optional)
+
+This repository name suggests Allure usage, but `allure-pytest` is not currently pinned in `requirements.txt`.
+
+Install plugin:
+
+```bash
+pip install allure-pytest
+```
+
+Generate results during test run:
+
+```bash
+pytest --alluredir=allure-results
+```
+
+Serve report (requires Allure CLI installed on your machine):
+
+```bash
+allure serve allure-results
+```
+
 ## Current Test Coverage
 
 - Header language switch (`uk`/`en`) and UI text checks.

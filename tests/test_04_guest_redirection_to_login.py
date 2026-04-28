@@ -1,5 +1,7 @@
 from src.pages.events_page import EventsPage
-
+import allure
+@allure.feature("User Security")
+@allure.story("Unauthorized Access Redirect")
 def test_tc04_guest_redirection_to_login(driver):
     page = EventsPage(driver)
     page.wait_for_page_to_load()

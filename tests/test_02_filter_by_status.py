@@ -1,5 +1,7 @@
 from src.pages.events_page import EventsPage
-
+import allure
+@allure.feature("Events Management")
+@allure.story("Filter System")
 def test_tc02_filter_status_cycle(driver):
     page = EventsPage(driver)
     page.wait_for_element(page.main_header_locator)
@@ -11,7 +13,7 @@ def test_tc02_filter_status_cycle(driver):
 
     page.set_status_filter("Відкритий")  # Знімаємо вибір
     page.set_status_filter("Закритий")  # Вибираємо новий
-    page.press_Escape()
+    page.press_escape()
 
     page.wait_until_status_applied("Закритий")
     cards = page.get_cards()
